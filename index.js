@@ -1,4 +1,4 @@
-const http = require('http');
+mconst http = require('http');
 const PORT = process.env.PORT || 10000;
 
 const server = http.createServer((req, res) => {
@@ -320,27 +320,12 @@ client.on('interactionCreate', async (interaction) => {
                 return interaction.update(panel);
             }
             if (interaction.customId === 'btn_send_fast' || interaction.customId === 'btn_send_custom') {
-                const embedData = (await getData(`embed_temp_${interaction.user.id}`)) || {};
-
-                const finalEmbed = new EmbedBuilder();
-                if (embedData.title) {
-                    if (embedData.titleUrl) {
-                        finalEmbed.setTitle(embedData.title).setURL(embedData.titleUrl);
-                    } else {
-                        finalEmbed.setTitle(embedData.title);
-                    }
-                }
-                if (embedData.description) finalEmbed.setDescription(embedData.description);
-                if (embedData.color) finalEmbed.setColor(embedData.color);
-                if (embedData.author && embedData.author.name) finalEmbed.setAuthor(embedData.author);
-                if (embedData.footer && embedData.footer.text) finalEmbed.setFooter(embedData.footer);
-                if (embedData.image) finalEmbed.setImage(embedData.image);
-                if (embedData.thumbnail) finalEmbed.setThumbnail(embedData.thumbnail);
-                if (embedData.fields) finalEmbed.addFields(embedData.fields);
-
-                await interaction.channel.send({ embeds: [finalEmbed] });
-
-                return interaction.update({ content: '✅ **Embed enviado com sucesso neste canal!**', components: [], embeds: [] });
+                const channelSelect = new ChannelSelectMenuBuilder()
+                    .setCustomId('select_canal_enviar_embed')
+                    .setChannelTypes([ChannelType.GuildText])
+                    .setPlaceholder('Selecione onde enviar o embed');
+                const row = new ActionRowBuilder().addComponents(channelSelect);
+                return interaction.reply({ content: '📤 Selecione abaixo o canal onde deseja enviar este embed:', components: [row], flags: [MessageFlags.Ephemeral] });
             }
         }
 
@@ -395,6 +380,34 @@ client.on('interactionCreate', async (interaction) => {
             await setData(`embed_temp_${interaction.user.id}`, embedData);
             const updatedPanel = createEmbedPanel(embedData);
             return interaction.update(updatedPanel);
+        }
+
+        if (interaction.isChannelSelectMenu() && interaction.customId === 'select_canal_enviar_embed') {
+            const channelId = interaction.values[0];
+            const targetChannel = interaction.guild.channels.cache.get(channelId);
+            const embedData = (await getData(`embed_temp_${interaction.user.id}`)) || {};
+
+            const finalEmbed = new EmbedBuilder();
+            if (embedData.title) {
+                if (embedData.titleUrl) {
+                    finalEmbed.setTitle(embedData.title).setURL(embedData.titleUrl);
+                } else {
+                    finalEmbed.setTitle(embedData.title);
+                }
+            }
+            if (embedData.description) finalEmbed.setDescription(embedData.description);
+            if (embedData.color) finalEmbed.setColor(embedData.color);
+            if (embedData.author && embedData.author.name) finalEmbed.setAuthor(embedData.author);
+            if (embedData.footer && embedData.footer.text) finalEmbed.setFooter(embedData.footer);
+            if (embedData.image) finalEmbed.setImage(embedData.image);
+            if (embedData.thumbnail) finalEmbed.setThumbnail(embedData.thumbnail);
+            if (embedData.fields) finalEmbed.addFields(embedData.fields);
+
+            if (targetChannel) {
+                await targetChannel.send({ embeds: [finalEmbed] });
+                return interaction.update({ content: `✅ Embed enviado com sucesso para <#${channelId}>!`, components: [] });
+            }
+            return interaction.update({ content: '❌ Canal não encontrado.', components: [] });
         }
 
         if (interaction.isChatInputCommand() && interaction.commandName === 'painel') {
@@ -825,7 +838,7 @@ client.on('messageCreate', async (message) => {
                 .setColor('#2b2d31')
                 .setTitle(`👤 𝙋𝙚𝙧𝙛𝙞𝙡 - ${targetUser.username}`)
                 .addFields(
-                    { name: '📊 𝙋𝙤𝙣𝙩os:', value: `**${metaTexto}**`, inline: true },
+                    { name: '📊 𝙋𝙤𝙣𝙩𝙤𝙨:', value: `**${metaTexto}**`, inline: true },
                     { name: '🏆 𝙋𝙤𝙨𝙞çã𝙤:', value: `**${posicaoTexto}**`, inline: true }
                 );
 
