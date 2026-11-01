@@ -56,7 +56,7 @@ const { recrutamentoCommand, configRecrutamentoCommand, handleRecrutamentoIntera
 const { ausenciaCommand, configAusenciaCommand, handleAusenciaInteraction } = require('./ausencia.js');
 const { batePontoCommand, painelBatePontoCommand, handleBatePontoInteraction } = require('./bateponto.js');
 
-const TOKEN = process.env.DISCORD_TOKEN || 'MTU2NjExMzcyMjc2ODgxODM2Ng.GaQz-I.KxUGFX-rWh10_avvtI1rRTGAUpn7rS5560FtE4';
+const TOKEN = process.env.DISCORD_TOKEN || '';
 const PREFIX = '.';
 
 const client = new Client({
