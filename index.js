@@ -48,15 +48,15 @@ async function conectarBanco() {
 conectarBanco();
 
 // --- IMPORTAÇÕES DOS MÓDULOS ---
-const { createEmbedPanel } = require('./embedPanel.js');
-const { getTitleModal, getDescModal, getColorModal, getAuthorModal, getImagesModal, getFooterModal, getFieldModal } = require('./embedModals.js');
+const { createEmbedPanel } = require('./embedPanel.js');[span_1](start_span)[span_1](end_span)
+const { getTitleModal, getDescModal, getColorModal, getAuthorModal, getImagesModal, getFooterModal, getFieldModal } = require('./embedModals.js');[span_2](start_span)[span_2](end_span)
 const { punirCommand, handlePunicoesInteraction, handlePunicoesMessage, verificarPunionsPendentesAoIniciar } = require('./punicoes.js');
 const { handleVerificacaoInteraction } = require('./verificacao.js');
 const { recrutamentoCommand, configRecrutamentoCommand, handleRecrutamentoInteraction, handleRecrutamentoMessage } = require('./recrutamento.js');
 const { ausenciaCommand, configAusenciaCommand, handleAusenciaInteraction } = require('./ausencia.js');
 const { batePontoCommand, painelBatePontoCommand, handleBatePontoInteraction } = require('./bateponto.js');
 
-const TOKEN = process.env.DISCORD_TOKEN || '';
+const TOKEN = process.env.DISCORD_TOKEN || 'MTU2NjExMzcyMjc2ODgxODM2Ng.G30z6O.y7ANFMhG5COOHrZZ51zKRytVX062ssI2oCKMJ0';
 const PREFIX = '.';
 
 const client = new Client({
@@ -281,7 +281,7 @@ client.on('interactionCreate', async (interaction) => {
 
         if (interaction.isChatInputCommand() && interaction.commandName === 'embed') {
             await setData(`embed_temp_${interaction.user.id}`, {});
-            const panel = createEmbedPanel({});
+            const panel = createEmbedPanel({});[span_3](start_span)[span_3](end_span)
             return await interaction.reply({ ...panel, flags: [MessageFlags.Ephemeral] });
         }
 
@@ -291,8 +291,8 @@ client.on('interactionCreate', async (interaction) => {
         ].includes(interaction.customId)) {
             const embedData = (await getData(`embed_temp_${interaction.user.id}`)) || {};
 
-            if (interaction.customId === 'btn_title') return interaction.showModal(getTitleModal(embedData));
-            if (interaction.customId === 'btn_desc') return interaction.showModal(getDescModal(embedData.description));
+            if (interaction.customId === 'btn_title') return interaction.showModal(getTitleModal(embedData));[span_4](start_span)[span_4](end_span)
+            if (interaction.customId === 'btn_desc') return interaction.showModal(getDescModal(embedData.description));[span_5](start_span)[span_5](end_span)
             if (interaction.customId === 'btn_color') {
                 const selectColor = new StringSelectMenuBuilder()
                     .setCustomId('select_embed_color_preset')
@@ -310,22 +310,38 @@ client.on('interactionCreate', async (interaction) => {
                 const row = new ActionRowBuilder().addComponents(selectColor);
                 return interaction.reply({ content: '🎨 **Selecione uma cor** para o seu embed:', components: [row], flags: [MessageFlags.Ephemeral] });
             }
-            if (interaction.customId === 'btn_author') return interaction.showModal(getAuthorModal(embedData.author));
-            if (interaction.customId === 'btn_images') return interaction.showModal(getImagesModal(embedData));
-            if (interaction.customId === 'btn_footer') return interaction.showModal(getFooterModal(embedData.footer));
-            if (interaction.customId === 'btn_fields') return interaction.showModal(getFieldModal());
+            if (interaction.customId === 'btn_author') return interaction.showModal(getAuthorModal(embedData.author));[span_6](start_span)[span_6](end_span)
+            if (interaction.customId === 'btn_images') return interaction.showModal(getImagesModal(embedData));[span_7](start_span)[span_7](end_span)
+            if (interaction.customId === 'btn_footer') return interaction.showModal(getFooterModal(embedData.footer));[span_8](start_span)[span_8](end_span)
+            if (interaction.customId === 'btn_fields') return interaction.showModal(getFieldModal());[span_9](start_span)[span_9](end_span)
             if (interaction.customId === 'btn_reset') {
                 await setData(`embed_temp_${interaction.user.id}`, {});
-                const panel = createEmbedPanel({});
+                const panel = createEmbedPanel({});[span_10](start_span)[span_10](end_span)
                 return interaction.update(panel);
             }
             if (interaction.customId === 'btn_send_fast' || interaction.customId === 'btn_send_custom') {
-                const channelSelect = new ChannelSelectMenuBuilder()
-                    .setCustomId('select_canal_enviar_embed')
-                    .setChannelTypes([ChannelType.GuildText])
-                    .setPlaceholder('Selecione onde enviar o embed');
-                const row = new ActionRowBuilder().addComponents(channelSelect);
-                return interaction.reply({ content: '📤 Selecione abaixo o canal onde deseja enviar este embed:', components: [row], flags: [MessageFlags.Ephemeral] });
+                const embedData = (await getData(`embed_temp_${interaction.user.id}`)) || {};
+
+                const finalEmbed = new EmbedBuilder();
+                if (embedData.title) {
+                    if (embedData.titleUrl) {
+                        finalEmbed.setTitle(embedData.title).setURL(embedData.titleUrl);
+                    } else {
+                        finalEmbed.setTitle(embedData.title);
+                    }
+                }
+                if (embedData.description) finalEmbed.setDescription(embedData.description);
+                if (embedData.color) finalEmbed.setColor(embedData.color);
+                if (embedData.author && embedData.author.name) finalEmbed.setAuthor(embedData.author);
+                if (embedData.footer && embedData.footer.text) finalEmbed.setFooter(embedData.footer);
+                if (embedData.image) finalEmbed.setImage(embedData.image);
+                if (embedData.thumbnail) finalEmbed.setThumbnail(embedData.thumbnail);
+                if (embedData.fields) finalEmbed.addFields(embedData.fields);
+
+                // Envia DIRETAMENTE no canal atual onde o botão foi acionado[span_11](start_span)[span_11](end_span)
+                await interaction.channel.send({ embeds: [finalEmbed] });[span_12](start_span)[span_12](end_span)
+
+                return interaction.update({ content: '✅ **Embed enviado com sucesso neste canal!**', components: [], embeds: [] });
             }
         }
 
@@ -333,14 +349,14 @@ client.on('interactionCreate', async (interaction) => {
             const escolha = interaction.values[0];
             if (escolha === 'custom_hex') {
                 const embedData = (await getData(`embed_temp_${interaction.user.id}`)) || {};
-                return interaction.showModal(getColorModal(embedData.color));
+                return interaction.showModal(getColorModal(embedData.color));[span_13](start_span)[span_13](end_span)
             }
 
             let embedData = (await getData(`embed_temp_${interaction.user.id}`)) || {};
             embedData.color = escolha;
             await setData(`embed_temp_${interaction.user.id}`, embedData);
 
-            const updatedPanel = createEmbedPanel(embedData);
+            const updatedPanel = createEmbedPanel(embedData);[span_14](start_span)[span_14](end_span)
             return interaction.update(updatedPanel);
         }
 
@@ -378,36 +394,8 @@ client.on('interactionCreate', async (interaction) => {
             }
 
             await setData(`embed_temp_${interaction.user.id}`, embedData);
-            const updatedPanel = createEmbedPanel(embedData);
+            const updatedPanel = createEmbedPanel(embedData);[span_15](start_span)[span_15](end_span)
             return interaction.update(updatedPanel);
-        }
-
-        if (interaction.isChannelSelectMenu() && interaction.customId === 'select_canal_enviar_embed') {
-            const channelId = interaction.values[0];
-            const targetChannel = interaction.guild.channels.cache.get(channelId);
-            const embedData = (await getData(`embed_temp_${interaction.user.id}`)) || {};
-
-            const finalEmbed = new EmbedBuilder();
-            if (embedData.title) {
-                if (embedData.titleUrl) {
-                    finalEmbed.setTitle(embedData.title).setURL(embedData.titleUrl);
-                } else {
-                    finalEmbed.setTitle(embedData.title);
-                }
-            }
-            if (embedData.description) finalEmbed.setDescription(embedData.description);
-            if (embedData.color) finalEmbed.setColor(embedData.color);
-            if (embedData.author && embedData.author.name) finalEmbed.setAuthor(embedData.author);
-            if (embedData.footer && embedData.footer.text) finalEmbed.setFooter(embedData.footer);
-            if (embedData.image) finalEmbed.setImage(embedData.image);
-            if (embedData.thumbnail) finalEmbed.setThumbnail(embedData.thumbnail);
-            if (embedData.fields) finalEmbed.addFields(embedData.fields);
-
-            if (targetChannel) {
-                await targetChannel.send({ embeds: [finalEmbed] });
-                return interaction.update({ content: `✅ Embed enviado com sucesso para <#${channelId}>!`, components: [] });
-            }
-            return interaction.update({ content: '❌ Canal não encontrado.', components: [] });
         }
 
         if (interaction.isChatInputCommand() && interaction.commandName === 'painel') {
@@ -798,7 +786,7 @@ client.on('messageCreate', async (message) => {
 
         if (contentLower === `${PREFIX}embed`) {
             const embedData = {};
-            const panel = createEmbedPanel(embedData);
+            const panel = createEmbedPanel(embedData);[span_16](start_span)[span_16](end_span)
             return message.reply(panel);
         }
 
