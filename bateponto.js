@@ -386,7 +386,7 @@ async function handleBatePontoInteraction(interaction, db) {
             return true;
         }
 
-        // VER LISTA (Buscando de forma segura no banco de dados)
+        // VER LISTA
         if (interaction.customId === 'bp_ver_lista') {
             await interaction.guild.members.fetch().catch(() => {});
 
@@ -613,23 +613,6 @@ async function handleBatePontoInteraction(interaction, db) {
             } catch (e) {}
 
             await interaction.reply({ content: `🔄 Informações de ponto de <@${targetId}> foram resetadas!`, flags: [MessageFlags.Ephemeral] });
-            await atualizarRanking(interaction.guild, db);
-            return true;
-        }
-    }
-
-    return false;
-}
-
-module.exports = {
-    batePontoCommand,
-    painelBatePontoCommand,
-    resetarRankCommand,
-    handleBatePontoInteraction
-};tData(`bp_tempo_diario_${guildId}_${targetId}`, diarioAtual);
-            await setData(`bp_tempo_mensal_${guildId}_${targetId}`, mensalAtual);
-            await interaction.reply({ content: `✅ **Tempo ${isAdd ? 'adicionado' : 'removido'} com sucesso!**`, flags: [MessageFlags.Ephemeral] });
-
             await atualizarRanking(interaction.guild, db);
             return true;
         }
