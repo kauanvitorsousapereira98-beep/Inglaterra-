@@ -476,8 +476,4 @@ module.exports = {
     handlePunicoesInteraction, 
     handlePunicoesMessage, 
     verificarPunionsPendentesAoIniciar 
-}; punirCommand, 
-    handlePunicoesInteraction, 
-    handlePunicoesMessage, 
-    verificarPunionsPendentesAoIniciar 
 };
