@@ -48,8 +48,8 @@ async function conectarBanco() {
 conectarBanco();
 
 // --- IMPORTAÇÕES DOS MÓDULOS ---
-const { createEmbedPanel } = require('./embedPanel.js');[span_0](start_span)[span_0](end_span)
-const { getTitleModal, getDescModal, getColorModal, getAuthorModal, getImagesModal, getFooterModal, getFieldModal } = require('./embedModals.js');[span_1](start_span)[span_1](end_span)
+const { createEmbedPanel } = require('./embedPanel.js');
+const { getTitleModal, getDescModal, getColorModal, getAuthorModal, getImagesModal, getFooterModal, getFieldModal } = require('./embedModals.js');
 const { punirCommand, handlePunicoesInteraction, handlePunicoesMessage, verificarPunionsPendentesAoIniciar } = require('./punicoes.js');
 const { handleVerificacaoInteraction } = require('./verificacao.js');
 const { recrutamentoCommand, configRecrutamentoCommand, handleRecrutamentoInteraction, handleRecrutamentoMessage } = require('./recrutamento.js');
@@ -281,7 +281,7 @@ client.on('interactionCreate', async (interaction) => {
 
         if (interaction.isChatInputCommand() && interaction.commandName === 'embed') {
             await setData(`embed_temp_${interaction.user.id}`, {});
-            const panel = createEmbedPanel({});[span_2](start_span)[span_2](end_span)
+            const panel = createEmbedPanel({});
             return await interaction.reply({ ...panel, flags: [MessageFlags.Ephemeral] });
         }
 
@@ -291,8 +291,8 @@ client.on('interactionCreate', async (interaction) => {
         ].includes(interaction.customId)) {
             const embedData = (await getData(`embed_temp_${interaction.user.id}`)) || {};
 
-            if (interaction.customId === 'btn_title') return interaction.showModal(getTitleModal(embedData));[span_3](start_span)[span_3](end_span)
-            if (interaction.customId === 'btn_desc') return interaction.showModal(getDescModal(embedData.description));[span_4](start_span)[span_4](end_span)
+            if (interaction.customId === 'btn_title') return interaction.showModal(getTitleModal(embedData));
+            if (interaction.customId === 'btn_desc') return interaction.showModal(getDescModal(embedData.description));
             if (interaction.customId === 'btn_color') {
                 const selectColor = new StringSelectMenuBuilder()
                     .setCustomId('select_embed_color_preset')
@@ -310,13 +310,13 @@ client.on('interactionCreate', async (interaction) => {
                 const row = new ActionRowBuilder().addComponents(selectColor);
                 return interaction.reply({ content: '🎨 **Selecione uma cor** para o seu embed:', components: [row], flags: [MessageFlags.Ephemeral] });
             }
-            if (interaction.customId === 'btn_author') return interaction.showModal(getAuthorModal(embedData.author));[span_5](start_span)[span_5](end_span)
-            if (interaction.customId === 'btn_images') return interaction.showModal(getImagesModal(embedData));[span_6](start_span)[span_6](end_span)
-            if (interaction.customId === 'btn_footer') return interaction.showModal(getFooterModal(embedData.footer));[span_7](start_span)[span_7](end_span)
-            if (interaction.customId === 'btn_fields') return interaction.showModal(getFieldModal());[span_8](start_span)[span_8](end_span)
+            if (interaction.customId === 'btn_author') return interaction.showModal(getAuthorModal(embedData.author));
+            if (interaction.customId === 'btn_images') return interaction.showModal(getImagesModal(embedData));
+            if (interaction.customId === 'btn_footer') return interaction.showModal(getFooterModal(embedData.footer));
+            if (interaction.customId === 'btn_fields') return interaction.showModal(getFieldModal());
             if (interaction.customId === 'btn_reset') {
                 await setData(`embed_temp_${interaction.user.id}`, {});
-                const panel = createEmbedPanel({});[span_9](start_span)[span_9](end_span)
+                const panel = createEmbedPanel({});
                 return interaction.update(panel);
             }
             if (interaction.customId === 'btn_send_fast' || interaction.customId === 'btn_send_custom') {
@@ -348,19 +348,18 @@ client.on('interactionCreate', async (interaction) => {
             const escolha = interaction.values[0];
             if (escolha === 'custom_hex') {
                 const embedData = (await getData(`embed_temp_${interaction.user.id}`)) || {};
-                return interaction.showModal(getColorModal(embedData.color));[span_10](start_span)[span_10](end_span)
+                return interaction.showModal(getColorModal(embedData.color));
             }
 
             let embedData = (await getData(`embed_temp_${interaction.user.id}`)) || {};
             embedData.color = escolha;
             await setData(`embed_temp_${interaction.user.id}`, embedData);
 
-            const updatedPanel = createEmbedPanel(embedData);[span_11](start_span)[span_11](end_span)
+            const updatedPanel = createEmbedPanel(embedData);
             return interaction.update(updatedPanel);
         }
 
         if (interaction.isModalSubmit() && ['modal_title', 'modal_desc', 'modal_color', 'modal_author', 'modal_images', 'modal_footer', 'modal_field'].includes(interaction.customId)) {
-            // CORREÇÃO: Garante que buscamos os dados atuais do banco antes de atualizar para não apagar os campos anteriores
             let embedData = (await getData(`embed_temp_${interaction.user.id}`)) || {};
 
             if (interaction.customId === 'modal_title') {
@@ -394,7 +393,7 @@ client.on('interactionCreate', async (interaction) => {
             }
 
             await setData(`embed_temp_${interaction.user.id}`, embedData);
-            const updatedPanel = createEmbedPanel(embedData);[span_12](start_span)[span_12](end_span)
+            const updatedPanel = createEmbedPanel(embedData);
             return interaction.update(updatedPanel);
         }
 
@@ -633,7 +632,7 @@ client.on('interactionCreate', async (interaction) => {
                 const infoCanais = `📢 **Canal de Avisos:** ${canalAvisoId ? `<#${canalAvisoId}>` : 'Não configurado'}\n` +
                                    `📋 **Canal de Logs (Pontos):** ${canalLogId ? `<#${canalLogId}>` : 'Não configurado'}\n` +
                                    `🚨 **Canal de Logs (Punições):** ${canalPunicaoId ? `<#${canalPunicaoId}>` : 'Não configurado'}\n` +
-                                   `📢 **Canal Avisos Punição (Público):** ${canalAvisosPunicaoId ? `<#${canalAvisosPunicaoId}>` : 'Not configurado'}\n` +
+                                   `📢 **Canal Avisos Punição (Público):** ${canalAvisosPunicaoId ? `<#${canalAvisosPunicaoId}>` : 'Não configurado'}\n` +
                                    `🛡️ **Cargo de Verificação:** ${cargoVerificadoId ? `<@&${cargoVerificadoId}>` : 'Não configurado'}\n\n`;
 
                 const embedPainel = new EmbedBuilder()
@@ -786,7 +785,7 @@ client.on('messageCreate', async (message) => {
 
         if (contentLower === `${PREFIX}embed`) {
             const embedData = {};
-            const panel = createEmbedPanel(embedData);[span_13](start_span)[span_13](end_span)
+            const panel = createEmbedPanel(embedData);
             return message.reply(panel);
         }
 
